@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Unit Checker for TUT Campus Square",
+    "version": "1.0.0",
+    "description": "",
+    "icons": {},
+    "background": {
+        "service_worker": "service_worker.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://kyo-web.teu.ac.jp/campusweb/*"
+            ],
+            "js": [
+                "content_scripts/content_script.js"
+            ],
+            "all_frames": true
+        }
+    ]
+}
