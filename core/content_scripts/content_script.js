@@ -12,9 +12,10 @@ window.addEventListener('load', async () => {
     const koma_table = target_tables.querySelector(".rishu-koma").getElementsByTagName("tbody")[0];
     // コマtableを各時限ごとに配列化 (0行目は曜日なので捨てる)
     const [_, ...period_rows] = Array.from(koma_table.children);
-    period_rows.forEach(async (element) => {
+    const start = performance.now();
+    period_rows.forEach(element => {
         const tables = element.getElementsByClassName("rishu-koma-inner");
-        Array.from(tables).forEach(async (table) => {
+        Array.from(tables).forEach(table => {
             const data = table;
             // 授業コード取得
             const lectureCode = data.innerText.split("\n")[0];
@@ -22,12 +23,13 @@ window.addEventListener('load', async () => {
                 return;
             }
             // 未登録以外の場合、単位数を取得し挿入
-            const credits = await getCredits(lectureCode);
-            insertCredits(data, credits);
+            getCredits(data, lectureCode);
+            // insertCredits(data, credits);
         });
     });
+    console.log("処理時間（秒）", (performance.now() - start) / 1000);
 });
-async function getCredits(lectureCode) {
+async function getCredits(element, lectureCode) {
     /**
      * 授業コードから単位数を取得する
      *
@@ -38,7 +40,7 @@ async function getCredits(lectureCode) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        return data["numberOfCredits"];
+        insertCredits(element, data["numberOfCredits"]);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -47,7 +49,6 @@ async function getCredits(lectureCode) {
         else {
             console.error(String(error));
         }
-        return 0; // エラーが発生した場合は0を返す
     }
 }
 function insertCredits(element, credits) {
