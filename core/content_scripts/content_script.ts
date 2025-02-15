@@ -16,20 +16,29 @@ window.addEventListener('load', async () => {
     // コマtableを各時限ごとに配列化 (0行目は曜日なので捨てる)
     const [_, ...period_rows] = Array.from(koma_table!.children)
     const start = performance.now();
+    const seenLectureCodes = new Set<string>();
     period_rows.forEach(element => {
         const tables = element.getElementsByClassName("rishu-koma-inner")
 
         Array.from(tables).forEach(table => {
             const data = table as HTMLElement
+
             // 授業コード取得
             const lectureCode = data.innerText.split("\n")[0]
 
             if (lectureCode == "未登録") { return; }
-
-            // 未登録以外の場合、単位数を取得し挿入
-            getCredits(data, lectureCode);
-            // insertCredits(data, credits);
+            
+            if (!seenLectureCodes.has(lectureCode)) {
+                seenLectureCodes.add(lectureCode);
+                // 未登録以外の場合、単位数を取得し挿入
+                getCredits(data, lectureCode);
+                // insertCredits(data, credits);
+            } else {
+                // すでに単位数を取得済みの場合、空にする
+                clearCredits(data);
+            }
         })
+        console.log(seenLectureCodes)
     })
     console.log("処理時間（秒）", (performance.now() - start) / 1000);
 })
@@ -45,7 +54,8 @@ async function getCredits(element: HTMLElement,lectureCode: string){
     try {
         const response = await fetch(url);
         const data = await response.json();
-        insertCredits(element, data["numberOfCredits"]);
+        const credits = data["numberOfCredits"];
+        insertCredits(element, credits);
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message);
@@ -62,5 +72,14 @@ function insertCredits(element: HTMLElement, credits: number) {
      * @param {HTMLElement} element - 挿入対象のHTML要素
      * @param {number} credits - 挿入する単位数
      */
-    element.innerText += `\n${credits}単位`;
+    element.innerText += `\n- ${credits}単位`;
+}
+
+function clearCredits(element: HTMLElement) {
+    /**
+     * 単位数をクリアする
+     * 
+     * @param {HTMLElement} element - クリア対象のHTML要素
+     */
+    element.innerText = "〃";
 }
