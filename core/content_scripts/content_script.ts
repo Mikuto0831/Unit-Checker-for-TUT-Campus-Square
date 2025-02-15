@@ -20,59 +20,77 @@ window.addEventListener('load', async () => {
     period_rows.forEach(element => {
         const tables = element.getElementsByClassName("rishu-koma-inner")
 
-        Array.from(tables).forEach(table => {
+        Array.from(tables).forEach(async table => {
             const data = table as HTMLElement
 
             // 授業コード取得
-            const lectureCode = data.innerText.split("\n")[0]
+            const innerText = data.innerText;
+            let innerTexts = innerText.split("\n");
+            const lectureCodes = innerTexts.length <= 3 ? [innerTexts[0]] : [innerTexts[0], innerTexts[3]];
+            console.log(lectureCodes)
 
-            if (lectureCode == "未登録") { return; }
+            if (lectureCodes[0] == "未登録") { return; }
             
-            if (!seenLectureCodes.has(lectureCode)) {
-                seenLectureCodes.add(lectureCode);
-                // 未登録以外の場合、単位数を取得し挿入
-                getCredits(data, lectureCode);
-                // insertCredits(data, credits);
-            } else {
-                // すでに単位数を取得済みの場合、空にする
-                clearCredits(data);
+            for (const lectureCode of lectureCodes) {
+                if (!seenLectureCodes.has(lectureCode)) {
+                    seenLectureCodes.add(lectureCode);
+                    // 未登録以外の場合、単位数を取得し挿入
+                    const credits = await getCredits(lectureCode);
+                    if (typeof credits === "string") {
+                        console.error(credits);
+                        return;
+                    }
+                    insertCredits(data, credits, lectureCodes.length >= 2 && lectureCodes.indexOf(lectureCode) === 0);
+                } else {
+                    // すでに単位数を取得済みの場合、空にする
+                    clearCredits(data);
+                }
             }
         })
-        console.log(seenLectureCodes)
     })
     console.log("処理時間（秒）", (performance.now() - start) / 1000);
 })
 
-async function getCredits(element: HTMLElement,lectureCode: string){
+async function getCredits(lectureCode: string): Promise<number | string> {
     /**
      * 授業コードから単位数を取得する
      * 
      * @param {string} lectureCode - 授業コード
-     * @return {number} - 単位数
+     * @returns {number | string} - 単位数 | エラーメッセージ
      */
     const url = `https://tut-syllabus-api.pages.dev/api/v1/all/${lectureCode}.json`
     try {
         const response = await fetch(url);
         const data = await response.json();
         const credits = data["numberOfCredits"];
-        insertCredits(element, credits);
+        return credits;
     } catch (error) {
         if (error instanceof Error) {
-            console.error(error.message);
+            return error.message;
         } else {
-            console.error(String(error));
+            return String(error);
         }
     }
 }
 
-function insertCredits(element: HTMLElement, credits: number) {
+function insertCredits(element: HTMLElement, credits: number, quarter: boolean = false) {
     /**
      * 単位数を挿入する
+     * クォーター制等の物には区切り線を挿入できるオプション有り
      * 
      * @param {HTMLElement} element - 挿入対象のHTML要素
      * @param {number} credits - 挿入する単位数
+     * @param {boolean} quarter - quarterの場合true
      */
-    element.innerText += `\n- ${credits}単位`;
+
+    const creditText = `- ${credits}単位`;
+    if (quarter) {
+        const lines = element.innerText.split('\n');
+        lines.splice(3, 0, creditText, '----------');
+        element.innerText = lines.join('\n');
+    } else {
+        element.innerText += `\n${creditText}`;
+    }
 }
 
 function clearCredits(element: HTMLElement) {
