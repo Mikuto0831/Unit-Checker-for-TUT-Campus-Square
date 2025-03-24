@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "Unit Checker for TUT Campus Square",
-    "version": "1.0.0",
+    "name": "東京工科大学 Unit Checker for TUT Campus Square(単位チェッカー)",
+    "version": "1.0.1",
     "description": "",
     "icons": {},
     "background": {

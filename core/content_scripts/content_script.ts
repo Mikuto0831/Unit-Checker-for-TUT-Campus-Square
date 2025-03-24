@@ -1,21 +1,22 @@
 window.addEventListener('load', async () => {
-    console.log("title解析開始2");
+    // console.log("title解析開始2");
 
     const title = document.head.getElementsByTagName("title")[0]
     if (title.innerHTML != "履修登録・登録状況照会") {
         return;
     }
-    console.log("target 変更開始")
+    // console.log("target 変更開始")
 
     // 全体table取得
     const target_tables = document.getElementsByTagName("table")[2];
 
     // コマtable取得
     const koma_table = target_tables.querySelector(".rishu-koma")!.getElementsByTagName("tbody")[0]
+    // const etc_koma_table = target_tables.querySelector(".rishu-etc")!.getElementsByTagName("tbody")[0].getElementsByTagName("tr")[2]
 
     // コマtableを各時限ごとに配列化 (0行目は曜日なので捨てる)
     const [_, ...period_rows] = Array.from(koma_table!.children)
-    const start = performance.now();
+    // const start = performance.now();
     const seenLectureCodes = new Set<string>();
     period_rows.forEach(element => {
         const tables = element.getElementsByClassName("rishu-koma-inner")
@@ -25,12 +26,13 @@ window.addEventListener('load', async () => {
 
             // 授業コード取得
             const innerText = data.innerText;
-            let innerTexts = innerText.split("\n");
+            let innerTexts = innerText.split("\n").map(text => text.replace(/追加登録/g, ''));
+            innerTexts = innerTexts.filter(text => text !== '');
             const lectureCodes = innerTexts.length <= 3 ? [innerTexts[0]] : [innerTexts[0], innerTexts[3]];
             console.log(lectureCodes)
 
             if (lectureCodes[0] == "未登録") { return; }
-            
+
             for (const lectureCode of lectureCodes) {
                 if (!seenLectureCodes.has(lectureCode)) {
                     seenLectureCodes.add(lectureCode);
@@ -48,7 +50,8 @@ window.addEventListener('load', async () => {
             }
         })
     })
-    console.log("処理時間（秒）", (performance.now() - start) / 1000);
+
+    // console.log("処理時間（秒）", (performance.now() - start) / 1000);
 })
 
 async function getCredits(lectureCode: string): Promise<number | string> {
@@ -85,11 +88,13 @@ function insertCredits(element: HTMLElement, credits: number, quarter: boolean =
 
     const creditText = `- ${credits}単位`;
     if (quarter) {
-        const lines = element.innerText.split('\n');
+        const targetElement = element.getElementsByTagName('td')[0]
+        const lines = targetElement.innerHTML.split('<br>');
         lines.splice(3, 0, creditText, '----------');
-        element.innerText = lines.join('\n');
+        targetElement.innerHTML = lines.join('<br>');
     } else {
-        element.innerText += `\n${creditText}`;
+        const targetElement = element.getElementsByTagName('td')[0]
+        targetElement.innerHTML += `<br>${creditText}`;
     }
 }
 
