@@ -17,7 +17,6 @@ window.addEventListener('load', async () => {
     // コマtableを各時限ごとに配列化 (0行目は曜日なので捨てる)
     const [_, ...period_rows] = Array.from(koma_table!.children)
     // const start = performance.now();
-    const seenLectureCodes = ;
     period_rows.forEach(element => {
         const tables = element.getElementsByClassName("rishu-koma-inner")
 
@@ -34,7 +33,6 @@ window.addEventListener('load', async () => {
             if (lectureCodes[0] == "未登録") { return; }
 
             for (const lectureCode of lectureCodes) {
-                seenLectureCodes.add(lectureCode);
                 // 未登録以外の場合、単位数を取得し挿入
                 const credits = await getCredits(lectureCode);
                 if (typeof credits === "string") {
