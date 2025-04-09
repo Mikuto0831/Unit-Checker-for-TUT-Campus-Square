@@ -17,7 +17,7 @@ window.addEventListener('load', async () => {
     // コマtableを各時限ごとに配列化 (0行目は曜日なので捨てる)
     const [_, ...period_rows] = Array.from(koma_table!.children)
     // const start = performance.now();
-    const seenLectureCodes = new Set<string>();
+    const seenLectureCodes = ;
     period_rows.forEach(element => {
         const tables = element.getElementsByClassName("rishu-koma-inner")
 
@@ -34,19 +34,14 @@ window.addEventListener('load', async () => {
             if (lectureCodes[0] == "未登録") { return; }
 
             for (const lectureCode of lectureCodes) {
-                if (!seenLectureCodes.has(lectureCode)) {
-                    seenLectureCodes.add(lectureCode);
-                    // 未登録以外の場合、単位数を取得し挿入
-                    const credits = await getCredits(lectureCode);
-                    if (typeof credits === "string") {
-                        console.error(credits);
-                        return;
-                    }
-                    insertCredits(data, credits, lectureCodes.length >= 2 && lectureCodes.indexOf(lectureCode) === 0);
-                } else {
-                    // すでに単位数を取得済みの場合、空にする
-                    clearCredits(data);
+                seenLectureCodes.add(lectureCode);
+                // 未登録以外の場合、単位数を取得し挿入
+                const credits = await getCredits(lectureCode);
+                if (typeof credits === "string") {
+                    console.error(credits);
+                    return;
                 }
+                insertCredits(data, credits, lectureCodes.length >= 2 && lectureCodes.indexOf(lectureCode) === 0);
             }
         })
     })
@@ -96,13 +91,4 @@ function insertCredits(element: HTMLElement, credits: number, quarter: boolean =
         const targetElement = element.getElementsByTagName('td')[0]
         targetElement.innerHTML += `<br>${creditText}`;
     }
-}
-
-function clearCredits(element: HTMLElement) {
-    /**
-     * 単位数をクリアする
-     * 
-     * @param {HTMLElement} element - クリア対象のHTML要素
-     */
-    element.innerText = "〃";
 }
