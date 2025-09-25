@@ -350,7 +350,7 @@ function createShortcutsContainer(): HTMLElement {
                 <div class="shortcut-category" style="background: linear-gradient(135deg, #f3e5f5 0%, #e8f5e8 100%); padding: 18px; border-radius: 8px; border: 1px solid #ddd;">
                     <h6 class="category-title" style="margin: 0 0 15px 0; color: #388e3c; font-size: 16px; font-weight: bold; text-align: center;">🎓 学生生活</h6>
                     <div class="shortcut-links" style="display: flex; flex-direction: column; gap: 10px;">
-                        ${createCampusSquareLink('SPW0001000-flow', 'SPW0001000', '学生ポートフォリオ', 'fas fa-user-graduate')}
+                        ${createCampusSquareLink('CHW0001000-flow', 'CHW0001000', '学生ポートフォリオ', 'fas fa-address-card')}
                     </div>
                 </div>
             </div>
