@@ -318,28 +318,34 @@ function createShortcutsContainer(): HTMLElement {
     // area-h1-parent内での配置に適したスタイリング
     container.style.cssText = `
         position: relative !important;
-        z-index: 1000 !important;
+        z-index: 1 !important;
         background: white !important;
-        margin: 0 0 20px 0 !important;
+        margin: 20px 0 20px 0 !important;
         padding: 20px !important;
         border-radius: 8px !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
         border: 1px solid #e0e0e0 !important;
         order: -1 !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        clear: both !important;
+        transform: none !important;
+        will-change: auto !important;
     `;
 
     container.innerHTML = `
-        <div class="shortcuts-wrapper" style="position: relative;">
-            <div class="shortcuts-title" style="margin-bottom: 20px; color: #1976d2; font-weight: bold; font-size: 18px; text-align: center;">
+        <div class="shortcuts-wrapper" style="position: relative; z-index: 1; background: white; padding: 10px;">
+            <div class="shortcuts-title" style="margin-bottom: 20px; color: #1976d2; font-weight: bold; font-size: 18px; text-align: center; position: relative; z-index: 1;">
                 <i class="fas fa-rocket" style="margin-right: 10px; color: #ff6b35;"></i>
                 <span>クイックアクセス</span>
             </div>
             
-            <div class="shortcuts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="shortcuts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; position: relative; z-index: 1;">
                 <!-- 教務/授業関連 -->
-                <div class="shortcut-category" style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); padding: 18px; border-radius: 8px; border: 1px solid #ddd;">
+                <div class="shortcut-category" style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); padding: 18px; border-radius: 8px; border: 1px solid #ddd; position: relative; z-index: 1;">
                     <h6 class="category-title" style="margin: 0 0 15px 0; color: #1976d2; font-size: 16px; font-weight: bold; text-align: center;">📚 教務/授業関連</h6>
-                    <div class="shortcut-links" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div class="shortcut-links" style="display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1;">
                         ${createCampusSquareLink('SBW3701300-flow', 'SBW3701300', 'シラバス参照', 'fas fa-search')}
                         ${createCampusSquareLink('RSW0001000-flow', 'RSW0001000', '履修登録・登録状況照会', 'fas fa-edit')}
                         ${createCampusSquareLink('SIW0001300-flow', 'SIW0001300', '単位修得状況照会', 'fas fa-search')}
@@ -347,9 +353,9 @@ function createShortcutsContainer(): HTMLElement {
                 </div>
                 
                 <!-- 学生生活 -->
-                <div class="shortcut-category" style="background: linear-gradient(135deg, #f3e5f5 0%, #e8f5e8 100%); padding: 18px; border-radius: 8px; border: 1px solid #ddd;">
+                <div class="shortcut-category" style="background: linear-gradient(135deg, #f3e5f5 0%, #e8f5e8 100%); padding: 18px; border-radius: 8px; border: 1px solid #ddd; position: relative; z-index: 1;">
                     <h6 class="category-title" style="margin: 0 0 15px 0; color: #388e3c; font-size: 16px; font-weight: bold; text-align: center;">🎓 学生生活</h6>
-                    <div class="shortcut-links" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div class="shortcut-links" style="display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1;">
                         ${createCampusSquareLink('CHW0001000-flow', 'CHW0001000', '学生ポートフォリオ', 'fas fa-address-card')}
                     </div>
                 </div>
@@ -391,7 +397,7 @@ function createCampusSquareLink(flowId: string, funcId: string, title: string, i
                font-size: 14px !important;
                font-weight: 500 !important;
                position: relative !important;
-               z-index: 1001 !important;
+               z-index: 1 !important;
            "
            onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#1976d2'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
            onmouseout="this.style.background='white'; this.style.borderColor='#e0e0e0'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
