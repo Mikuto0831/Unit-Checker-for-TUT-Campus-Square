@@ -15,7 +15,11 @@
             "js": [
                 "content_scripts/content_script.js"
             ],
+            "css": [
+                "styles/shortcuts.css"
+            ],
             "all_frames": true
         }
-    ]
+    ],
+    "permissions": []
 }
